@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOLUTION CRED FINANCEIRA LTDA — Intermediação de Crédito sem Captação</title>
+  <meta name="description" content="Intermediação de crédito sem captação. Estruturamos operações B2B com governança, compliance e gestão de risco. Belford Roxo, RJ — Brasil." />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="color-scheme" content="light dark" />
+  <!--
+    Requisitos principais solicitados:
+    - Design moderno inspirado no layout de referência
+    - Seções: Início, Sobre, Serviços, Diferenciais, Processo, Contatos
+    - Formulário em modal (sem telefone), consentimento com checkbox clicável
+    - Ao enviar: fechar modal de contato e abrir modal de sucesso (sem alerts do navegador)
+    - Acessibilidade: ARIA, foco, labels, aria-live para erros
+    - Conformidade com Apple (sem coleta excessiva, consentimento explícito)
+  -->
+  <style>
+    /* ===================== TOKENS ===================== */
+    :root{
+      --bg:#0a0e16;
+      --bg2:#0d1320;
+      --ink:#0f1728;
+      --card:#0b111c;
+      --card2:#0e1522;
+      --text:#e6eefc;
+      --text2:#cbd5e1;
+      --muted:#8aa0b8;
+      --brand:#3b82f6;
+      --brand2:#60a5fa;
+      --accent:#22c55e;
+      --danger:#ef4444;
+      --stroke:rgba(255,255,255,.10);
+      --shadow:0 12px 36px rgba(0,0,0,.35);
+      --r:18px;
+      --r-lg:26px;
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:linear-gradient(180deg,var(--bg) 0%, var(--bg2) 60%, #0b1220 100%);
+      color:var(--text); line-height:1.65; -webkit-font-smoothing:antialiased;
+    }
+    a{color:#cfe4ff;text-decoration:none}
+    a:hover{color:white}
+    img{max-width:100%;display:block;border-radius:12px}
+    h1,h2,h3{line-height:1.22;margin:0 0 .5rem}
+    h1{font-size:clamp(28px,4vw,48px)}
+    h2{font-size:clamp(22px,2.8vw,34px)}
+    h3{font-size:clamp(18px,2vw,22px)}
+    p{margin:.35rem 0 1rem;color:var(--text2)}
+    .container{max-width:var(--max);margin:0 auto;padding:0 20px}
+    .section{padding:68px 0}
+    .section-header{margin-bottom:24px}
+    .grid{display:grid;gap:22px}
+    .grid-2{grid-template-columns:repeat(2,1fr)}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+    @media(max-width:960px){.grid-2,.grid-3{grid-template-columns:1fr}}
+    .card{
+      background:linear-gradient(180deg,var(--card) 0%, var(--card2) 100%);
+      border:1px solid var(--stroke); border-radius:var(--r);
+      padding:26px; box-shadow:var(--shadow)
+    }
+    .chip{
+      display:inline-flex;gap:.5rem;align-items:center;
+      color:#dbeafe;background:rgba(59,130,246,.15);
+      border:1px dashed rgba(59,130,246,.45); padding:.35rem .7rem;border-radius:999px
+    }
+    .btn{
+      appearance:none;border:0;border-radius:12px;
+      padding:14px 18px;font-weight:700;cursor:pointer;
+      background:linear-gradient(180deg,var(--brand) 0%, var(--brand2) 100%);
+      color:white; box-shadow:0 10px 26px rgba(59,130,246,.35);
+      transition:.25s transform ease,.25s box-shadow ease
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary{background:#111827;border:1px solid var(--stroke);color:#d1d9e8;box-shadow:none}
+    .muted{color:var(--muted)}
+    .kbd{background:#0c1424;border:1px solid var(--stroke);padding:2px 6px;border-radius:8px}
+
+    /* ===================== NAV ===================== */
+    header{
+      position:sticky;top:0;z-index:40;
+      backdrop-filter:saturate(150%) blur(8px);
+      background:rgba(10,14,22,.75); border-bottom:1px solid var(--stroke)
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+    .nav-menu{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo{width:34px;height:34px;border-radius:12px;
+      background:radial-gradient(120px 120px at 30% 30%,#93c5fd 0%,#1e3a8a 60%,#0b1020 100%);
+      border:1px solid rgba(255,255,255,.15)
+    }
+
+    /* ===================== HERO ===================== */
+    .hero{position:relative;overflow:hidden}
+    .hero-media{
+      position:absolute;inset:0;z-index:-1;
+      background:
+        radial-gradient(60% 55% at 70% 20%, rgba(59,130,246,.35) 0%, rgba(59,130,246,0) 60%),
+        linear-gradient(180deg, rgba(10,14,22,.25) 0%, rgba(10,14,22,.85) 70%),
+        url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop');
+      background-size:cover;background-position:center;
+      filter:saturate(105%) contrast(103%)
+    }
+    .hero .container{padding:100px 20px 74px}
+    .stats{display:grid;gap:12px;grid-template-columns:repeat(4,1fr);margin-top:18px}
+    .stat{background:rgba(255,255,255,.04);border:1px solid var(--stroke);padding:16px;border-radius:16px}
+    .stat b{font-size:1.35rem}
+    @media(max-width:960px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+    /* ===================== LIST DOTS ===================== */
+    .li{display:flex;gap:12px;align-items:flex-start}
+    .li .dot{width:12px;height:12px;border-radius:99px;flex-shrink:0;margin-top:8px;
+      background:conic-gradient(from 180deg at 50% 50%, var(--brand), #1d4ed8, #60a5fa)}
+    /* ===================== SERVICES ===================== */
+    .service .thumb{height:120px;border:1px solid var(--stroke);border-radius:14px;margin-bottom:12px;
+      display:flex;align-items:center;justify-content:center;background:#0b1020}
+    .service:hover{outline:1px solid rgba(96,165,250,.35)}
+    /* ===================== TIMELINE ===================== */
+    .timeline{position:relative;border-left:2px dashed rgba(96,165,250,.35);margin-left:12px;padding-left:18px}
+    .timeline .badge{display:inline-flex;gap:8px;align-items:center;
+      background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.4);
+      color:#dcfce7;border-radius:999px;padding:4px 10px;font-weight:700}
+    /* ===================== FOOTER ===================== */
+    footer{border-top:1px solid var(--stroke);padding:36px 0;color:#b6c2d6}
+
+    /* ===================== MODALS ===================== */
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.6);z-index:60;padding:20px}
+    .modal.open{display:grid}
+    .dialog{
+      width:min(720px,92vw);
+      background:linear-gradient(180deg,#0d1322 0%, #0b111e 100%);
+      border:1px solid var(--stroke);border-radius:24px;box-shadow:var(--shadow);padding:22px
+    }
+    .dialog>header{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--stroke)}
+    .x{background:#121826;border:1px solid var(--stroke);color:#cbd5e1;padding:6px 10px;border-radius:10px;cursor:pointer}
+
+    /* ===================== FORM ===================== */
+    form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    form .row-1{display:grid;grid-template-columns:1fr;gap:14px}
+    label{font-weight:700;color:#e2e8f0}
+    input,select,textarea{
+      width:100%;background:#0b1020;border:1px solid var(--stroke);
+      color:#e5eefb;border-radius:12px;padding:12px 14px
+    }
+    textarea{min-height:140px;resize:vertical}
+    .form-help{font-size:.9rem;color:#94a3b8}
+
+    /* ===== Custom checkbox (clicável em toda a linha) ===== */
+    .checkline{
+      display:flex;align-items:flex-start;gap:12px;cursor:pointer;
+      user-select:none;padding:10px;border:1px solid var(--stroke);border-radius:12px;background:#0b1020
+    }
+    .checkline input[type="checkbox"]{
+      appearance:none;width:20px;height:20px;border-radius:6px;
+      border:1.5px solid rgba(255,255,255,.4);background:#0a0f1d;display:grid;place-items:center;
+      margin-top:2px;flex-shrink:0;position:relative;outline:0
+    }
+    .checkline input[type="checkbox"]::after{
+      content:""; width:12px;height:12px;border-radius:3px;transform:scale(0);
+      transition:120ms transform ease-in-out;background:linear-gradient(180deg,var(--accent),#16a34a)
+    }
+    .checkline input[type="checkbox"]:checked{border-color:#86efac;background:#052b16}
+    .checkline input[type="checkbox"]:checked::after{transform:scale(1)}
+    .error-box{
+      display:none;gap:10px;align-items:flex-start;margin:.5rem 0 0;
+      background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.45);color:#fecaca;padding:12px;border-radius:12px
+    }
+    .error-box.show{display:flex}
+    .toast{
+      display:flex;gap:10px;align-items:flex-start;
+      background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);
+      color:#dcfce7;padding:16px;border-radius:16px
+    }
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <!-- ===================== NAV ===================== -->
+  <header role="banner" aria-label="Navegação principal">
+    <div class="container nav">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>SOLUTION CRED FINANCEIRA</span>
+      </div>
+      <nav class="nav-menu" aria-label="Seções">
+        <a href="#inicio">Início</a>
+        <a href="#sobre">Quem Somos</a>
+        <a href="#servicos">Soluções</a>
+        <a href="#diferenciais">Por que Escolher</a>
+        <a href="#processo">Como Operamos</a>
+        <a href="#contato" id="contatoLink" role="button" aria-haspopup="dialog" aria-controls="contatoModal">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="inicio" class="hero" aria-labelledby="hero-title">
+    <div class="hero-media" aria-hidden="true"></div>
+    <div class="container">
+      <span class="chip">Intermediação de Crédito · Compliance · Gestão de Risco</span>
+      <h1 id="hero-title">Crédito B2B Estruturado com Governança e Agilidade</h1>
+      <p>Conectamos empresas a financiadores institucionais sem captação de depósitos. Originação, estruturação e gestão
+        pós-concessão com rastreabilidade total.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a class="btn" href="#servicos">Conhecer serviços</a>
+        <button class="btn secondary" id="openContatoTop" aria-haspopup="dialog" aria-controls="contatoModal">Falar com especialista</button>
+      </div>
+      <div class="stats" role="list" aria-label="Indicadores">
+        <div class="stat" role="listitem"><b>+600</b><br><span class="muted">operações analisadas/ano</span></div>
+        <div class="stat" role="listitem"><b>≤ 72h</b><br><span class="muted">pré-aprovação média</span></div>
+        <div class="stat" role="listitem"><b>9 setores</b><br><span class="muted">foco em B2B</span></div>
+        <div class="stat" role="listitem"><b>100%</b><br><span class="muted">processo auditável</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SOBRE ===================== -->
+  <section id="sobre" class="section" aria-labelledby="sobre-title">
+    <div class="container grid grid-2">
+      <div>
+        <div class="section-header">
+          <span class="chip">Nossa identidade</span>
+          <h2 id="sobre-title">Quem é a Solution Cred Financeira</h2>
+          <p>Empresa independente sediada em Belford Roxo (RJ), especializada em <strong>originação, estruturação e gestão</strong>
+            de operações de crédito B2B. Trabalhamos com lastro real, garantias claras e governança para reduzir assimetria entre
+            tomador e financiador.</p>
+        </div>
+        <div class="grid">
+          <div class="li"><span class="dot"></span><p>Diagnóstico de fluxo de caixa e mapeamento de garantias para propor o <i>term sheet</i> com melhor equilíbrio.</p></div>
+          <div class="li"><span class="dot"></span><p>Compliance/KYC e validações cadastrais com trilha de auditoria e política de <span class="kbd">least data</span>.</p></div>
+          <div class="li"><span class="dot"></span><p>Monitoramento pós-concessão com indicadores e alertas preventivos.</p></div>
+        </div>
+      </div>
+      <aside class="card">
+        <h3>Resumo institucional</h3>
+        <ul>
+          <li>Segmentos: indústria leve, logística, tecnologia, saúde, serviços B2B.</li>
+          <li>Tickets: R$ 250k a R$ 8M.</li>
+          <li>Instrumentos: CCB, duplicatas/nota comercial, garantias reais/fiduciárias.</li>
+        </ul>
+        <p class="form-help">Dados tratados com necessidade, finalidade e transparência.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== SERVIÇOS ===================== -->
+  <section id="servicos" class="section" aria-labelledby="svc-title">
+    <div class="container">
+      <div class="section-header">
+        <span class="chip">O que entregamos</span>
+        <h2 id="svc-title">Soluções Especializadas</h2>
+        <p>Esteira digital e auditável, do diagnóstico ao <i>closing</i>, sem fricção.</p>
+      </div>
+      <div class="grid grid-3">
+        <article class="card service" aria-labelledby="s1">
+          <div class="thumb"><span>Mapeamento de risco</span></div>
+          <h3 id="s1">Originação &amp; Pré-Aprovação</h3>
+          <p>Modelagem de garantias e parâmetros de exposição. Em até 72h, entregamos um <i>term sheet</i> comparativo com
+            alternativas viáveis.</p>
+          <ul>
+            <li>Coleta mínima de dados.</li>
+            <li>Compatibilização com políticas dos funders.</li>
+            <li>Checklist 100% digital.</li>
+          </ul>
+        </article>
+        <article class="card service" aria-labelledby="s2">
+          <div class="thumb"><span>Documentos e garantias</span></div>
+          <h3 id="s2">Estruturação &amp; Formalização</h3>
+          <p>Coordenação jurídica, registros e assinaturas. Padrões de e-signature e armazenamento seguro.</p>
+          <ul>
+            <li>Minutas compatíveis com o risco.</li>
+            <li>Garantias: cessão fiduciária, alienação.</li>
+            <li>Integração com cartórios/registradores.</li>
+          </ul>
+        </article>
+        <article class="card service" aria-labelledby="s3">
+          <div class="thumb"><span>KPIs de crédito</span></div>
+          <h3 id="s3">Gestão Pós-Concessão</h3>
+          <p>Acompanhamento de covenants e alertas preventivos. Relatórios objetivos para diretoria.</p>
+          <ul>
+            <li>Dashboards e eventos.</li>
+            <li>Alertas de concentração/atrasos.</li>
+            <li>Rotina de governança.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DIFERENCIAIS ===================== -->
+  <section id="diferenciais" class="section" aria-labelledby="why-title">
+    <div class="container">
+      <div class="section-header">
+        <span class="chip">Valor além da taxa</span>
+        <h2 id="why-title">Por que Escolher a Solution Cred</h2>
+        <p>Construímos a operação certa para seu contexto, com previsibilidade e transparência.</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card"><h3>Transparência</h3><p>Remuneração exposta e ausência de conflitos. Nada de comissões ocultas.</p></div>
+        <div class="card"><h3>Risco sob Controle</h3><p>Elegibilidade de lastro e análise de concentração setorial proprietária.</p></div>
+        <div class="card"><h3>Agilidade</h3><p>Checklist objetivo e comunicação assíncrona: do diagnóstico ao <i>closing</i> sem ruído.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROCESSO ===================== -->
+  <section id="processo" class="section" aria-labelledby="proc-title">
+    <div class="container grid grid-2">
+      <div>
+        <div class="section-header">
+          <span class="chip">Do primeiro contato ao desembolso</span>
+          <h2 id="proc-title">Nosso Processo</h2>
+          <p>Caminho claro, com responsáveis e prazos definidos.</p>
+        </div>
+        <div class="timeline">
+          <p><span class="badge">1 · Diagnóstico</span> Memorando de crédito com hipóteses de estrutura.</p>
+          <p><span class="badge">2 · Estruturação</span> Validação de lastro, garantias e minutas; <strong>term sheet final</strong>.</p>
+          <p><span class="badge">3 · Formalização</span> Assinaturas, registros e <strong>closing</strong> com agenda de governança.</p>
+        </div>
+      </div>
+      <aside class="card">
+        <h3>Privacidade</h3>
+        <p>Coletamos o mínimo necessário para contato e análise. Sem telefone. Você pode solicitar exclusão a qualquer momento.</p>
+        <button class="btn" id="openContatoSide" aria-haspopup="dialog" aria-controls="contatoModal">Iniciar avaliação</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== CONTATOS ===================== -->
+  <section id="contato" class="section" aria-labelledby="contatos-title">
+    <div class="container grid grid-2">
+      <div>
+        <div class="section-header">
+          <span class="chip">Canais oficiais</span>
+          <h2 id="contatos-title">Nossos Contatos</h2>
+        </div>
+        <div class="card">
+          <p><strong>Endereço:</strong><br>Rua Ite, SN, 26135-363, Belford Roxo, Rio de Janeiro</p>
+          <p><strong>E-mail:</strong><br><a href="mailto:alves@solutioncredfinanceira.org">alves@solutioncredfinanceira.org</a></p>
+          <p class="muted">Preferimos contato por e-mail. Não pedimos senha nem código.</p>
+          <button class="btn" id="openContatoBottom" aria-haspopup="dialog" aria-controls="contatoModal">Abrir formulário seguro</button>
+        </div>
+      </div>
+      <aside class="card">
+        <h3>Perguntas frequentes</h3>
+        <p><span class="kbd">Prazos</span> Pré-aprovação usual em até 72h.</p>
+        <p><span class="kbd">Setores</span> Indústria leve, logística, tecnologia, saúde, serviços B2B.</p>
+        <p><span class="kbd">Instrumentos</span> CCB, duplicatas/nota comercial, garantias reais e fiduciárias.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer role="contentinfo">
+    <div class="container" style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap">
+      <p>© <span id="yy"></span> SOLUTION CRED FINANCEIRA LTDA. Todos os direitos reservados.</p>
+      <p class="muted">Belford Roxo · Rio de Janeiro · Brasil</p>
+    </div>
+  </footer>
+
+  <!-- ========== MODAL CONTATO (sem telefone) ========== -->
+  <div class="modal" id="contatoModal" role="dialog" aria-modal="true" aria-labelledby="contatoTitle" aria-describedby="contatoDesc">
+    <div class="dialog">
+      <header>
+        <h3 id="contatoTitle">Fale com a nossa equipe</h3>
+        <button class="x" id="closeContato" aria-label="Fechar">Fechar</button>
+      </header>
+      <div class="content">
+        <p id="contatoDesc" class="form-help">Usamos seus dados apenas para responder ao contato e iniciar avaliação de crédito.</p>
+
+        <!-- Caixa de erros com aria-live -->
+        <div id="errors" class="error-box" role="alert" aria-live="polite">
+          <div><strong>Verifique os campos:</strong> <span id="errText"></span></div>
+        </div>
+
+        <form id="formContato" novalidate>
+          <div class="row">
+            <div>
+              <label for="nome">Nome completo</label>
+              <input id="nome" name="nome" autocomplete="name" placeholder="Seu nome" required />
+              <div class="form-help">Ex.: Ana Lima</div>
+            </div>
+            <div>
+              <label for="email">E-mail corporativo</label>
+              <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="voce@empresa.com.br" required />
+              <div class="form-help">Responderemos por e-mail em até 1 dia útil.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="empresa">Empresa</label>
+              <input id="empresa" name="empresa" autocomplete="organization" placeholder="Razão social (opcional)" />
+            </div>
+            <div>
+              <label for="assunto">Assunto</label>
+              <select id="assunto" name="assunto">
+                <option>Originação de crédito</option>
+                <option>Estruturação &amp; garantias</option>
+                <option>Gestão pós-concessão</option>
+                <option>Outros</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row-1">
+            <div>
+              <label for="mensagem">Mensagem</label>
+              <textarea id="mensagem" name="mensagem" placeholder="Conte o seu desafio, ticket estimado, lastro disponível e prazos."></textarea>
+              <div class="form-help">Quanto mais objetivo, melhor a análise inicial.</div>
+            </div>
+          </div>
+
+          <!-- Checkbox acessível + clicável em toda a linha -->
+          <label class="checkline" id="consentLine">
+            <input type="checkbox" id="consent" aria-describedby="consentHelp" />
+            <span>
+              Autorizo o uso dos meus dados para contato e avaliação preliminar de crédito.
+              <span id="consentHelp" class="form-help" style="display:block">Você pode solicitar exclusão a qualquer momento.</span>
+            </span>
+          </label>
+
+          <div class="row-1" style="margin-top:6px">
+            <button class="btn" type="submit">Enviar solicitação</button>
+            <button class="btn secondary" type="button" id="cancelar">Cancelar</button>
+          </div>
+
+          <p class="form-help">Não solicitamos telefone. Não pedimos senha ou código por e-mail.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL SUCESSO (custom, sem alert) ========== -->
+  <div class="modal" id="okModal" role="dialog" aria-modal="true" aria-labelledby="okTitle">
+    <div class="dialog">
+      <header>
+        <h3 id="okTitle">Solicitação enviada</h3>
+        <button class="x" id="closeOk" aria-label="Fechar">Fechar</button>
+      </header>
+      <div class="content">
+        <div class="toast" role="status" aria-live="polite">
+          <div>
+            <p><strong>Obrigado!</strong> Recebemos sua mensagem e vamos responder no e-mail informado.</p>
+            <p class="muted">Se precisar complementar informações, escreva para <a href="mailto:alves@solutioncredfinanceira.org">alves@solutioncredfinanceira.org</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script>
+    // ano no rodapé
+    document.getElementById('yy').textContent = new Date().getFullYear();
+
+    // smooth scroll
+    (function(){
+      const links = document.querySelectorAll('a[href^="#"]:not([aria-haspopup])');
+      links.forEach(a=>{
+        a.addEventListener('click', e=>{
+          const id = a.getAttribute('href').slice(1);
+          const el = document.getElementById(id);
+          if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); history.replaceState(null,'','#'+id); }
+        });
+      });
+    })();
+
+    // ======= Modais =======
+    const contatoModal = document.getElementById('contatoModal');
+    const okModal = document.getElementById('okModal');
+    const openers = [
+      document.getElementById('openContatoTop'),
+      document.getElementById('openContatoSide'),
+      document.getElementById('openContatoBottom'),
+      document.getElementById('contatoLink')
+    ].filter(Boolean);
+    const closeContato = document.getElementById('closeContato');
+    const closeOk = document.getElementById('closeOk');
+    const cancelar = document.getElementById('cancelar');
+
+    function openModal(m){
+      m.classList.add('open');
+      const focusable = m.querySelector('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+      if(focusable) focusable.focus();
+      document.body.style.overflow='hidden';
+    }
+    function closeModal(m){
+      m.classList.remove('open');
+      document.body.style.overflow='';
+    }
+    openers.forEach(btn=>btn.addEventListener('click', ()=>openModal(contatoModal)));
+    if(closeContato) closeContato.addEventListener('click', ()=>closeModal(contatoModal));
+    if(cancelar) cancelar.addEventListener('click', ()=>closeModal(contatoModal));
+    if(closeOk) closeOk.addEventListener('click', ()=>closeModal(okModal));
+
+    // fechar com ESC e clique fora
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape'){ closeModal(contatoModal); closeModal(okModal); }
+    });
+    [contatoModal, okModal].forEach(m=>{
+      m.addEventListener('click', e=>{ if(e.target===m){ closeModal(m); } });
+    });
+
+    // ======= Form: validação sem alert, checkbox clicável =======
+    const form = document.getElementById('formContato');
+    const errBox = document.getElementById('errors');
+    const errText = document.getElementById('errText');
+    const fields = {
+      nome: document.getElementById('nome'),
+      email: document.getElementById('email'),
+      mensagem: document.getElementById('mensagem'),
+      consent: document.getElementById('consent')
+    };
+
+    // tornar toda a linha do consent clicável (além do input)
+    document.getElementById('consentLine').addEventListener('click', (e)=>{
+      if(e.target.id !== 'consent'){ // evita duplo toggle quando clica direto na caixa
+        fields.consent.checked = !fields.consent.checked;
+      }
+    });
+
+    function markBad(el, bad){
+      el.style.outline = bad ? '2px solid var(--danger)' : '';
+    }
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      errText.textContent = '';
+      errBox.classList.remove('show');
+
+      const nomeOk = (fields.nome.value||'').trim().length >= 2;
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((fields.email.value||'').trim());
+      const msgOk = (fields.mensagem.value||'').trim().length >= 10;
+      const consentOk = fields.consent.checked;
+
+      markBad(fields.nome, !nomeOk);
+      markBad(fields.email, !emailOk);
+      markBad(fields.mensagem, !msgOk);
+
+      const problems = [];
+      if(!nomeOk) problems.push('nome');
+      if(!emailOk) problems.push('e-mail');
+      if(!msgOk) problems.push('mensagem (mín. 10 caracteres)');
+      if(!consentOk) problems.push('consentimento');
+
+      if(problems.length){
+        errText.textContent = problems.join(', ') + '.';
+        errBox.classList.add('show');
+        return;
+      }
+
+      // Simulação de envio (sem backend)
+      // fetch('/api/contato', { method:'POST', body:new FormData(form), credentials:'omit' })
+
+      form.reset();
+      closeModal(contatoModal);
+      openModal(okModal);
+    });
+  </script>
+</body>
+</html>
